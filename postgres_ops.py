@@ -9,18 +9,22 @@ import pandas as pd
 
 def connect_pg():
     load_dotenv()
-
     db_connection_url = f"postgresql+psycopg2://postgres:{os.getenv('pg_pwd')}@127.0.0.1/practice"
     db_connection = create_engine(db_connection_url)
     return db_connection
 
+    db_connection_url = f"postgresql+psycopg2://postgres:postgres_pwd@127.0.0.1/practice"
+    db_connection = create_engine(db_connection_url)
+    return db_connection
 
-# dumps to csv in same dir using pandas
+def get_intopostgres():
+    db = create_engine('postgresql://postgres:@localhost/practice')
+
+# dumps to csv in same dir
 def pg_dump(db_connection):
     df = pd.read_sql("SELECT * FROM emp;", con=db_connection)
     print(df.columns.ravel)
     df.to_csv('frompostgres.csv', index=False)
-
 
 # load csv to pg using pandas
 def pg_load(db_connection, file):
