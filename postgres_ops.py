@@ -7,33 +7,28 @@ import os
 import pandas as pd
 
 
-def connect_pg():
+def pg_connect(db):
     load_dotenv()
-    db_connection_url = f"postgresql+psycopg2://postgres:{os.getenv('pg_pwd')}@127.0.0.1/practice"
+    db_connection_url = f"postgresql+psycopg2://postgres:{os.getenv('pg_pwd')}@127.0.0.1/{db}"
     db_connection = create_engine(db_connection_url)
     return db_connection
 
-    db_connection_url = f"postgresql+psycopg2://postgres:postgres_pwd@127.0.0.1/practice"
-    db_connection = create_engine(db_connection_url)
-    return db_connection
-
-def get_intopostgres():
-    db = create_engine('postgresql://postgres:@localhost/practice')
 
 # dumps to csv in same dir
-def pg_dump(db_connection):
-    df = pd.read_sql("SELECT * FROM emp;", con=db_connection)
-    print(df.columns.ravel)
+def pg_dump(db_connection, table):
+    df = pd.read_sql(f"SELECT * FROM {table};", con=db_connection)
+    # print(df.columns.ravel)
     df.to_csv('frompostgres.csv', index=False)
 
+
 # load csv to pg using pandas
-def pg_load(db_connection, file):
+def pg_load(db_connection, file, name):
     df = pd.read_csv(file)
     if "id" not in df.columns:
-        df.to_sql('temp1', con=db_connection, index=True, index_label='id', if_exists='replace')
+        df.to_sql(name, con=db_connection, index=True, index_label='id', if_exists='replace')
     else:
-        df.to_sql('temp1', con=db_connection, index=True, if_exists='replace')
+        df.to_sql(name, con=db_connection, index=True, if_exists='replace')
 
 
-conn = connect_pg()
-pg_load(conn, "frommysql.csv")
+# conn = connect_pg()
+# pg_load(conn, "frommysql.csv")
