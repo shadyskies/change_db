@@ -21,24 +21,28 @@ if __name__ == "__main__":
         if val:
             table = input("table name: ")
             print(f"[INFO] Dumping SQL table: {table}")
-            pg_dump(conn, args['table'])
+            pg_dump(conn, table)
         else:
+            print("Enter all for loading all files in mysql_dump or enter specific file")
             file = input("Enter csv file path: ")
             name = input("Enter name of table: ")
             pg_load(conn, file, name)
-    else:
+        print("Operation executed successfully")
+
+    elif args['type'] == 'mysql':
         print("[INFO] Connecting to MySQL")
         conn = mysql_connect(args["database"])
-        val = int(input("0:Export\n1:Load"))
+        val = int(input("0:Load\n1:Export: "))
         if val:
-            file = input("Enter csv file path: ")
-            name = input("Enter name of : ")
-            print("[INFO] Loading to MySQL")
-            mysql_load(conn, file, name)
-        else:
             table = input("table name: ")
             print(f"[INFO] Dumping SQL table: {table}")
             mysql_dump(conn, table)
-            
-    print("Operation executed successfully")
-    
+        else:
+            print("Enter all for loading all files in pg_dump or enter specific file")
+            file = input("Enter csv file path: ")
+            name = input("Enter name of table: ")
+            print("[INFO] Loading to MySQL")
+            mysql_load(conn, file, name)
+        print("Operation executed successfully")
+    else:
+        print("Database not supported")
